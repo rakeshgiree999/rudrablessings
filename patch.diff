@@ -1,0 +1,10 @@
+*** Begin Patch
+*** Update File: shop.php
+@@
+-$products = rb_products($pdo, $productFilters);
+-file_put_contents(__DIR__ . '/debug.log', json_encode(['filters'=>$productFilters, 'time'=>date('c')]) . PHP_EOL, FILE_APPEND);
+-$totalProducts = rb_products_count($pdo, $productFilters);
++$products = rb_products($pdo, $productFilters);
++file_put_contents(__DIR__ . '/debug.log', json_encode(['filters'=>$productFilters, 'count'=>count($products), 'time'=>date('c')]) . PHP_EOL, FILE_APPEND);
++$totalProducts = rb_products_count($pdo, $productFilters);
+*** End Patch
