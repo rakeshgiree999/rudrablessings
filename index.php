@@ -91,6 +91,8 @@ if (!is_string($heroImagesJson)) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?= rb_escape($brandName) ?> | <?= rb_escape($brandTagline) ?></title>
   <meta name="description" content="<?= rb_escape($heroBody) ?>">
+  <link rel="icon" href="<?= rb_asset('media/logo.png') ?>" type="image/png">
+  <link rel="apple-touch-icon" href="<?= rb_asset('media/logo.png') ?>">
   <link rel="stylesheet" href="<?= rb_asset('css/style.css') ?>">
 </head>
 

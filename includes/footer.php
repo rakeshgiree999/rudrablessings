@@ -44,4 +44,5 @@ $defaultFooter = sprintf('&copy; %d %s - Crafted with love in Australia.', $year
 </footer>
 <script>
   window.__RB_CSRF_COOKIE__ = <?= json_encode(rb_csrf_cookie_name(), JSON_UNESCAPED_SLASHES) ?>;
+  window.__RB_BASE_URL__ = <?= json_encode(rtrim(rb_url(''), '/'), JSON_UNESCAPED_SLASHES) ?>;
 </script>

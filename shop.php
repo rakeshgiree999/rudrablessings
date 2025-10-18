@@ -128,6 +128,8 @@ if ($sort !== 'default') {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?= rb_escape($brandName) ?> | Shop</title>
   <meta name="description" content="Browse the full RudraBlessings collection of malas, crystals and incense.">
+  <link rel="icon" href="<?= rb_asset('media/logo.png') ?>" type="image/png">
+  <link rel="apple-touch-icon" href="<?= rb_asset('media/logo.png') ?>">
   <link rel="stylesheet" href="<?= rb_asset('css/style.css') ?>">
 </head>
 

@@ -162,6 +162,8 @@ if ($orderData) {
   <title>Order Tracking | RudraBlessings</title>
   <meta name="description"
     content="Track your RudraBlessings order by ID and email. View live status, shipment details, and delivery progress.">
+  <link rel="icon" href="<?= rb_asset('media/logo.png') ?>" type="image/png">
+  <link rel="apple-touch-icon" href="<?= rb_asset('media/logo.png') ?>">
   <link rel="stylesheet" href="<?= rb_asset('css/style.css') ?>">
   <link rel="stylesheet" href="<?= rb_asset('css/pages.css') ?>">
 </head>

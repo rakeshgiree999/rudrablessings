@@ -10,11 +10,15 @@ if (!defined('RB_ENV_LOADED')) {
 
 require_once __DIR__ . '/session.php';
 rb_session_boot();
+require_once __DIR__ . '/security.php';
+rb_enforce_https();
 
 ini_set('default_charset', 'UTF-8');
 if (!headers_sent()) {
     header('Content-Type: text/html; charset=UTF-8');
-    header('Link: </logo.ico>; rel="icon"; type="image/x-icon"', false);
+    header('Link: </favicon.ico>; rel="icon"; type="image/x-icon"', false);
+    header('Link: </media/logo.png>; rel="icon"; type="image/png"', false);
+    header('Link: </media/logo.png>; rel="apple-touch-icon"', false);
 }
 
 require_once __DIR__ . '/site.php';

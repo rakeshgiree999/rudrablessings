@@ -378,6 +378,51 @@ if (!function_exists('rb_account_wishlist_items')) {
     }
 }
 
+if (!function_exists('rb_account_add_wishlist_item')) {
+    function rb_account_add_wishlist_item(\PDO $pdo, int $userId, int $productId): bool
+    {
+        if ($userId <= 0 || $productId <= 0) {
+            return false;
+        }
+
+        $wishlistId = rb_account_ensure_wishlist($pdo, $userId);
+
+        $productExists = $pdo->prepare('SELECT 1 FROM products WHERE id = :id LIMIT 1');
+        $productExists->execute(['id' => $productId]);
+        if (!$productExists->fetchColumn()) {
+            return false;
+        }
+
+        $stmt = $pdo->prepare('
+            INSERT INTO wishlist_items (wishlist_id, product_id, added_at)
+            VALUES (:wishlist, :product, NOW())
+            ON DUPLICATE KEY UPDATE added_at = VALUES(added_at)
+        ');
+
+        return $stmt->execute([
+            'wishlist' => $wishlistId,
+            'product' => $productId,
+        ]);
+    }
+}
+
+if (!function_exists('rb_account_remove_wishlist_item')) {
+    function rb_account_remove_wishlist_item(\PDO $pdo, int $userId, int $productId): void
+    {
+        if ($userId <= 0 || $productId <= 0) {
+            return;
+        }
+
+        $wishlistId = rb_account_ensure_wishlist($pdo, $userId);
+
+        $stmt = $pdo->prepare('DELETE FROM wishlist_items WHERE wishlist_id = :wishlist AND product_id = :product');
+        $stmt->execute([
+            'wishlist' => $wishlistId,
+            'product' => $productId,
+        ]);
+    }
+}
+
 if (!function_exists('rb_account_orders')) {
     /**
      * @return array<int, array<string,mixed>>

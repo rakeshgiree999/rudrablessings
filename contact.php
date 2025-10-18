@@ -8,21 +8,41 @@ $contactBlocks = rb_blocks($pdo, 'contact');
 $contactHero = $contactBlocks['hero'] ?? [];
 $formNoteHtml = (string)($contactBlocks['form-note']['body'] ?? '');
 
-$contactTitle = trim((string)($contactHero['title'] ?? 'Get in Touch'));
+$contactTitle = trim((string)($contactHero['title'] ?? ''));
 if ($contactTitle === '') {
-    $contactTitle = 'Get in Touch';
+    $contactTitle = trim(sprintf('%s Contact', (string)$brandName));
 }
-$contactSubtitle = trim((string)($contactHero['subtitle'] ?? 'Questions, partnerships, wholesale, or support—we are here for you.'));
-if ($contactSubtitle === '') {
-    $contactSubtitle = 'Questions, partnerships, wholesale, or support—we are here for you.';
+$contactSubtitle = trim((string)($contactHero['subtitle'] ?? ''));
+$metaDescription = '';
+if ($contactSubtitle !== '') {
+    $metaDescription = $contactSubtitle;
+} elseif (!empty($settings['seo.meta_description'])) {
+    $metaDescription = trim((string)$settings['seo.meta_description']);
+} elseif (!empty($brandTagline)) {
+    $metaDescription = (string)$brandTagline;
+} else {
+    $metaDescription = trim(sprintf('Connect with %s', (string)$brandName));
 }
-$metaDescription = $contactSubtitle ?: 'Reach the RudraBlessings team for support, wholesale, or partnership enquiries.';
 
-$contactAddress = trim((string)($settings['support.address'] ?? '558 Railway Parade, Hurstville NSW 2220'));
-$contactEmail = trim((string)($settings['support.email'] ?? 'support@rudrablessings.com'));
-$contactPhone = trim((string)($settings['support.phone'] ?? '0410462468'));
-$contactHours = trim((string)($settings['support.hours'] ?? 'Mon – Fri · 9am to 5pm AEST'));
+// All human-facing copy now comes from seeded schema tables.
+$contactAddress = trim((string)($settings['support.address'] ?? ''));
+$contactEmail = trim((string)($settings['support.email'] ?? ''));
+$contactPhone = trim((string)($settings['support.phone'] ?? ''));
+$contactHours = trim((string)($settings['support.hours'] ?? ''));
 $mapEmbedUrl = trim((string)($settings['contact.map_embed'] ?? ''));
+$mapDirectionsUrl = trim((string)($settings['contact.map_link'] ?? ''));
+$mapImageRelative = 'media/maps/map-vit.png';
+$mapImagePath = __DIR__ . '/' . $mapImageRelative;
+$mapImageAvailable = is_file($mapImagePath);
+if (($mapDirectionsUrl !== '' || $mapEmbedUrl !== '') && !$mapImageAvailable) {
+    error_log('[contact] Map preview image missing at ' . $mapImagePath);
+}
+$mapClickTarget = '';
+if ($mapDirectionsUrl !== '') {
+    $mapClickTarget = $mapDirectionsUrl;
+} elseif ($contactAddress !== '') {
+    $mapClickTarget = 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode($contactAddress);
+}
 
 $socialLinks = [];
 $registeredSocial = [
@@ -42,74 +62,18 @@ foreach ($registeredSocial as $social) {
     ];
 }
 
+// Structured sections load from dedicated tables seeded in database/schema.sql.
 $statsStmt = $pdo->query('SELECT metric_value AS value, metric_label AS label FROM contact_stats ORDER BY sort_order ASC, id ASC');
 $contactStats = $statsStmt ? $statsStmt->fetchAll(PDO::FETCH_ASSOC) : [];
-if (!$contactStats) {
-    $contactStats = [
-        ['value' => '24h', 'label' => 'Average response time'],
-        ['value' => '5k+', 'label' => 'Customers supported worldwide'],
-        ['value' => '7', 'label' => 'Time zones covered by our team'],
-    ];
-}
 
 $channelsStmt = $pdo->query('SELECT icon, title, description, cta_label, cta_url FROM contact_channels ORDER BY sort_order ASC, id ASC');
 $supportChannels = $channelsStmt ? $channelsStmt->fetchAll(PDO::FETCH_ASSOC) : [];
-if (!$supportChannels) {
-    $supportChannels = [
-        [
-            'icon' => 'envelope',
-            'title' => 'Email Support',
-            'description' => 'Need help with an order or custom build? We reply within a business day.',
-            'cta_label' => $contactEmail,
-            'cta_url' => 'mailto:' . $contactEmail,
-        ],
-        [
-            'icon' => 'phone',
-            'title' => 'Phone',
-            'description' => 'Prefer to chat? Leave a message and we will call you back within 6 hours.',
-            'cta_label' => $contactPhone,
-            'cta_url' => 'tel:' . preg_replace('/[^0-9+]/', '', $contactPhone),
-        ],
-    ];
-}
 
 $highlightsStmt = $pdo->query('SELECT title, body FROM contact_highlights ORDER BY sort_order ASC, id ASC');
 $contactHighlights = $highlightsStmt ? $highlightsStmt->fetchAll(PDO::FETCH_ASSOC) : [];
-if (!$contactHighlights) {
-    $contactHighlights = [
-        [
-            'title' => 'Wholesale & Partnerships',
-            'body' => 'Curating for a studio, spa, or boutique? We offer flexible wholesale bundles, private label options, and training for your facilitators.',
-        ],
-        [
-            'title' => 'Custom Ritual Kits',
-            'body' => 'From wedding favours to corporate gifting, we co-create fully personalised ritual kits aligned to your story and intention.',
-        ],
-        [
-            'title' => 'Community Circles',
-            'body' => 'Seeking a guided meditation, workshop, or talk for your community? Reach out with your idea and we will build it with you.',
-        ],
-    ];
-}
 
 $faqStmt = $pdo->query('SELECT question, answer FROM contact_faqs ORDER BY sort_order ASC, id ASC');
 $faqEntries = $faqStmt ? $faqStmt->fetchAll(PDO::FETCH_ASSOC) : [];
-if (!$faqEntries) {
-    $faqEntries = [
-        [
-            'question' => 'How quickly will I hear back?',
-            'answer' => 'We reply to most enquiries within 24 hours Monday to Friday. Urgent shipping questions are bumped to the front of the queue.',
-        ],
-        [
-            'question' => 'Do you ship internationally?',
-            'answer' => 'Yes. We currently ship to 40+ countries. Include your city and postal code in the message and we will confirm delivery estimates and customs notes.',
-        ],
-        [
-            'question' => 'Can I visit your studio?',
-            'answer' => 'We host private studio visits by appointment in Hurstville. Share your preferred date and we will confirm availability and directions.',
-        ],
-    ];
-}
 
 $measureLength = static function (string $value): int {
     return function_exists('mb_strlen') ? mb_strlen($value) : strlen($value);
@@ -241,6 +205,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?= rb_escape($contactTitle) ?> | <?= rb_escape($brandName) ?></title>
   <meta name="description" content="<?= rb_escape($metaDescription) ?>">
+  <link rel="icon" href="<?= rb_asset('media/logo.png') ?>" type="image/png">
+  <link rel="apple-touch-icon" href="<?= rb_asset('media/logo.png') ?>">
   <link rel="stylesheet" href="<?= rb_asset('css/style.css') ?>">
   <link rel="stylesheet" href="<?= rb_asset('css/pages.css') ?>">
   <style>
@@ -608,11 +574,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       opacity: 0.9;
     }
 
+    .map-embed {
+      display: inline-block;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(30, 41, 59, 0.08);
+      transition: transform .2s ease;
+    }
+
+    .map-embed img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
     .map-embed iframe {
+      display: block;
       width: 100%;
       min-height: 240px;
       border: 0;
-      border-radius: 18px;
+    }
+
+    .map-embed:hover {
+      transform: translateY(-2px);
     }
 
     .social-inline {
@@ -757,12 +741,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <?php endif; ?>
         </div>
 
-        <?php if ($mapEmbedUrl !== ''): ?>
+        <?php if ($mapImageAvailable || $mapDirectionsUrl !== '' || $mapEmbedUrl !== ''): ?>
           <div class="card map">
             <h3>Studio map</h3>
-            <div class="map-embed">
-              <iframe title="Map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="<?= rb_escape($mapEmbedUrl) ?>"></iframe>
-            </div>
+            <?php if ($mapImageAvailable): ?>
+              <?php
+              $mapImageTag = '<img src="' . rb_asset($mapImageRelative) . '" alt="Map preview for the RudraBlessings studio">';
+              if ($mapClickTarget !== '') {
+                  echo '<a class="map-embed" href="' . rb_escape($mapClickTarget) . '" target="_blank" rel="noopener noreferrer">' . $mapImageTag . '</a>';
+              } else {
+                  echo '<div class="map-embed">' . $mapImageTag . '</div>';
+              }
+              ?>
+            <?php elseif ($mapEmbedUrl !== ''): ?>
+              <div class="map-embed map-iframe">
+                <iframe title="Studio map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="<?= rb_escape($mapEmbedUrl) ?>"></iframe>
+              </div>
+            <?php else: ?>
+              <p class="muted" style="margin:0;">Map preview unavailable. <?= $mapDirectionsUrl !== '' ? '<a href="' . rb_escape($mapDirectionsUrl) . '" target="_blank" rel="noopener noreferrer">Open in Google Maps</a>.' : '' ?></p>
+            <?php endif; ?>
+            <?php if ($mapClickTarget !== ''): ?>
+              <p class="muted" style="margin-top:10px;font-size:13px;">
+                Tap the map to open directions in Google Maps.
+              </p>
+            <?php endif; ?>
           </div>
         <?php endif; ?>
       </aside>

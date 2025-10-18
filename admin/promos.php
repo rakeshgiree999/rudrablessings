@@ -219,6 +219,8 @@ $formatDateForInput = static function (?string $value): string {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= rb_escape($brandName) ?> Admin &mdash; Promos</title>
+  <link rel="icon" href="<?= rb_asset('../media/logo.png') ?>" type="image/png">
+  <link rel="apple-touch-icon" href="<?= rb_asset('../media/logo.png') ?>">
   <link rel="stylesheet" href="css/admin.css">
   <style>
     .promo-grid {

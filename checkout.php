@@ -449,6 +449,8 @@ $noteText = 'Stripe Checkout runs in test mode. Payments are simulated and no re
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout | <?= rb_escape($brandName) ?></title>
+  <link rel="icon" href="<?= rb_asset('media/logo.png') ?>" type="image/png">
+  <link rel="apple-touch-icon" href="<?= rb_asset('media/logo.png') ?>">
   <link rel="stylesheet" href="<?= rb_asset('css/style.css') ?>">
 </head>
 

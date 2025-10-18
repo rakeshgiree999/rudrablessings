@@ -20,6 +20,7 @@ $adminNavItems = [
     ['key' => 'reports', 'label' => 'Reports', 'href' => 'reports.php', 'icon' => 'reports'],
     ['key' => 'promos', 'label' => 'Promos', 'href' => 'promos.php', 'icon' => 'discount'],
     ['key' => 'users', 'label' => 'Customers', 'href' => 'users.php', 'icon' => 'users'],
+    ['key' => 'contact_content', 'label' => 'Contact Content', 'href' => 'contact-content.php', 'icon' => 'contact'],
     ['key' => 'settings', 'label' => 'Settings', 'href' => 'settings.php', 'icon' => 'settings'],
 ];
 
@@ -38,6 +39,7 @@ function rb_admin_icon(string $name): string
         'blog' => '<path d="M4 4h12a2 2 0 0 1 2 2v3h-2V6H4v12h12v-3h2v3a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm7 4h9v2h-9V8zm0 4h9v2h-9v-2zm0 4h5v2h-5v-2z"/>',
         'discount' => '<path d="M20.5 11.5l-7.95 7.95a2.5 2.5 0 0 1-1.77.73H6a2 2 0 0 1-2-2v-4.78a2.5 2.5 0 0 1 .73-1.77L11.68 3.7a2.5 2.5 0 0 1 3.54 0l5.28 5.28a2.5 2.5 0 0 1 0 3.54zM8.5 9A1.5 1.5 0 1 0 8.5 6a1.5 1.5 0 0 0 0 3zm7 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM9 16.5a.75.75 0 0 1 0-1.5h6a.75.75 0 0 1 0 1.5H9z"/>',
         'settings' => '<path d="M19.14 12.94a7.97 7.97 0 0 0 .05-.94 7.97 7.97 0 0 0-.05-.94l2.03-1.58a.5.5 0 0 0 .11-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.06 7.06 0 0 0-1.63-.94l-.36-2.54A.5.5 0 0 0 14.89 2h-3.78a.5.5 0 0 0-.5.43l-.36 2.54a7.06 7.06 0 0 0-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L3.71 8.49a.5.5 0 0 0 .11.64L5.85 10.7a7.97 7.97 0 0 0-.05.94 7.97 7.97 0 0 0 .05.94l-2.03 1.58a.5.5 0 0 0-.11.64l1.92 3.32a.5.5 0 0 0 .6.22l2.39-.96c.5.38 1.05.7 1.63.94l.36 2.54a.5.5 0 0 0 .5.43h3.78a.5.5 0 0 0 .5-.43l.36-2.54c.58-.24 1.13-.56 1.63-.94l2.39.96a.5.5 0 0 0 .6-.22l1.92-3.32a.5.5 0 0 0-.11-.64l-2.03-1.58zM13 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>',
+        'contact' => '<path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-5l-5 3v-3H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm0 2v9h12.67L17 13H7l3.5-4 3 3 3.5-4 1 3H20V6H4z"/>',
     ];
     return $icons[$name] ?? $icons['dashboard'];
 }

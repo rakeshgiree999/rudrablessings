@@ -1,10 +1,29 @@
 ﻿/* RudraBlessings – Core Frontend (client-only)
    =============================================== */
 
-const RB_CONFIG = {
-  csrfCookie: window.__RB_CSRF_COOKIE__ || 'rb_csrf'
-};
-
+const RB_CONFIG = {
+  csrfCookie: window.__RB_CSRF_COOKIE__ || 'rb_csrf',
+  apiBase: (window.__RB_BASE_URL__ || '').replace(/\/+$/, '')
+};
+
+// Normalise API paths so deployments in subdirectories resolve correctly.
+function rbResolveApiUrl(path) {
+  if (!path) {
+    return path;
+  }
+  if (/^[a-z][a-z0-9+\-.]*:\/\//i.test(path)) {
+    return path;
+  }
+  const base = RB_CONFIG.apiBase;
+  if (!base) {
+    return path;
+  }
+  if (path.startsWith('/')) {
+    return `${base}${path}`;
+  }
+  return `${base}/${path}`;
+}
+
 let RB_PRODUCTS = Array.isArray(window.__RB_PRODUCTS__) ? window.__RB_PRODUCTS__ : [];
 let RB_PRODUCTS_PROMISE = null;
 
@@ -102,7 +121,8 @@ async function apiRequest(url, options = {}) {
       opts.headers = { ...opts.headers, 'X-CSRF-Token': token };
     }
   }
-  const res = await fetch(url, opts);
+  const endpoint = rbResolveApiUrl(url);
+  const res = await fetch(endpoint, opts);
   const text = await res.text();
   let data = {};
   if (text) {

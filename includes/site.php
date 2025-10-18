@@ -41,7 +41,13 @@ if (!function_exists('rb_url')) {
         if ($base !== '') {
             $base = rtrim($base, '/');
         } else {
-            $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+            $forceHttps = filter_var($_ENV['APP_FORCE_HTTPS'] ?? $_SERVER['APP_FORCE_HTTPS'] ?? '1', FILTER_VALIDATE_BOOLEAN);
+            $scheme = 'http';
+            if ($forceHttps) {
+                $scheme = 'https';
+            } elseif (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+                $scheme = 'https';
+            }
             $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
             $script = $_SERVER['SCRIPT_NAME'] ?? '';
             $dir = rtrim(str_replace('\\', '/', dirname($script)), '/');
@@ -64,6 +70,12 @@ if (!function_exists('rb_menu')) {
      */
     function rb_menu(PDO $pdo, string $menuKey = 'primary'): array
     {
+        static $menuCache = [];
+
+        if (isset($menuCache[$menuKey])) {
+            return $menuCache[$menuKey];
+        }
+
         $stmt = $pdo->prepare('SELECT label, url, sort_order FROM menu_items WHERE menu_key = :key AND is_active = 1 ORDER BY sort_order ASC');
         $stmt->execute(['key' => $menuKey]);
         $items = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
@@ -74,6 +86,8 @@ if (!function_exists('rb_menu')) {
             $item['url'] = preg_replace('/\\.html($|\\?)/i', '.php$1', $item['url']);
         }
         unset($item);
+
+        $menuCache[$menuKey] = $items;
         return $items;
     }
 }

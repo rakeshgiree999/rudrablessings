@@ -196,6 +196,8 @@ $communityQuotes = [
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?= rb_escape($heroTitle) ?> | <?= rb_escape($brandName) ?></title>
   <meta name="description" content="<?= rb_escape($aboutMetaDescription) ?>">
+  <link rel="icon" href="<?= rb_asset('media/logo.png') ?>" type="image/png">
+  <link rel="apple-touch-icon" href="<?= rb_asset('media/logo.png') ?>">
   <link rel="stylesheet" href="<?= rb_asset('css/style.css') ?>">
   <style>
     .about-main {

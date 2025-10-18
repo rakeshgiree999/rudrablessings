@@ -16,6 +16,10 @@ require __DIR__ . '/../includes/site.php';
 
 function rb_json(array $data, int $code = 200): void
 {
+    if (defined('RB_API_TEST_MODE') && RB_API_TEST_MODE && class_exists('RbApiTestResponse')) {
+        throw new RbApiTestResponse($data, $code);
+    }
+
     http_response_code($code);
     echo json_encode($data);
     exit;

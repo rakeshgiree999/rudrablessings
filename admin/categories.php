@@ -133,6 +133,8 @@ $categories = $pdo->query('SELECT id, name, slug, description, image_path, is_ac
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Categories | <?= rb_escape($brandName) ?> Admin</title>
+  <link rel="icon" href="<?= rb_asset('../media/logo.png') ?>" type="image/png">
+  <link rel="apple-touch-icon" href="<?= rb_asset('../media/logo.png') ?>">
   <link rel="stylesheet" href="<?= rb_asset('../admin/css/admin.css') ?>">
   <style>
     .category-grid {

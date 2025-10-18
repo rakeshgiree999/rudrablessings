@@ -86,6 +86,8 @@ $relatedPosts = $post['id'] ? rb_blog_related_posts($pdo, (int)$post['id'], 3) :
   <title><?= rb_escape($postTitle) ?> | <?= rb_escape($brandName) ?></title>
   <meta name="description" content="<?= rb_escape($metaDescription) ?>">
   <link rel="canonical" href="<?= rb_escape($canonicalUrl) ?>">
+  <link rel="icon" href="<?= rb_asset('media/logo.png') ?>" type="image/png">
+  <link rel="apple-touch-icon" href="<?= rb_asset('media/logo.png') ?>">
   <link rel="stylesheet" href="<?= rb_asset('css/style.css') ?>">
   <link rel="stylesheet" href="<?= rb_asset('css/pages.css') ?>">
   <meta property="og:type" content="article">

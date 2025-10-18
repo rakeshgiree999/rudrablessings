@@ -144,6 +144,8 @@ if (isset($_GET['saved'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Products | <?= rb_escape($brandName) ?> Admin</title>
+  <link rel="icon" href="<?= rb_asset('../media/logo.png') ?>" type="image/png">
+  <link rel="apple-touch-icon" href="<?= rb_asset('../media/logo.png') ?>">
   <link rel="stylesheet" href="<?= rb_asset('../admin/css/admin.css') ?>">
   <style>
     .admin-btn.danger {
